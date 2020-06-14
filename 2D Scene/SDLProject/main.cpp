@@ -68,7 +68,7 @@ void Initialize() {
 
     player_x = -3.5f;
     translate_x = 0.0f;
-    translate_amount = 0.003f;
+    translate_amount = 1.0f;
     rotate = 0.0f;
 
     glUseProgram(program.programID);
@@ -99,11 +99,16 @@ void Update() {
     float deltaTime = ticks - lastTicks;
     lastTicks = ticks;
     translate_x += translate_amount * deltaTime;
-    rotate += 0.05f * deltaTime;
+    rotate += 0.5f * deltaTime;
     player_x += translate_x;
-    //if (player_x >= 3.5f) {
-        //translate_amount = -0.003f;
-    //}
+    if (player_x >= 4.8f) {
+        translate_amount = -1.0f;
+    }
+    if (player_x <= -4.0f) {
+        translate_amount = 1.0f;
+    }
+    modelMatrix = glm::mat4(1.0f);
+    modelMatrix2 = glm::mat4(1.0f);
     modelMatrix = glm::translate(modelMatrix, glm::vec3(translate_x, 0.0f, 0.0f));
     modelMatrix2 = glm::rotate(modelMatrix2, glm::radians(rotate), glm::vec3(0.0f, 0.0f, 4.0f));
 }
@@ -113,7 +118,7 @@ void Render() {
 
     program.SetModelMatrix(modelMatrix);
 
-    float vertices[] = { -3.5f, -3.5f, -2.5f, -3.5f, -2.5f, -2.5f, -3.5f, -3.5f, -3.5f, -2.5f, -2.5f, -2.5f };
+    float vertices[] = { -4.0f, -4.0f, -2.0f, -4.0f, -2.0f, -2.0f, -4.0f, -4.0f, -4.0f, -2.0f, -2.0f, -2.0f };
     float texCoords[] = { 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f };
 
     glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, vertices);
@@ -129,8 +134,8 @@ void Render() {
 
     program.SetModelMatrix(modelMatrix2);
 
-    float vertices2[] = { -2, 2, -3, 2, -3, 3, -2, 2, -2, 3, -3, 3 };
-    float texCoords2[] = { 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0 };
+    float vertices2[] = { -4.0f, 2.0f, -4.0f, 4.0f, -2.0f, 4.0f, -4.0f, 2.0f, -2.0f, 2.0f, -2.0f, 4.0f };
+    float texCoords2[] = { 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f };
 
     glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, vertices2);
     glEnableVertexAttribArray(program.positionAttribute);
@@ -162,4 +167,3 @@ int main(int argc, char* argv[]) {
     Shutdown();
     return 0;
 }
-
