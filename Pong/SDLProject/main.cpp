@@ -18,37 +18,40 @@ SDL_Window* displayWindow;
 bool gameIsRunning = true;
 
 ShaderProgram program;
-glm::mat4 viewMatrix, modelMatrix, modelMatrix2, projectionMatrix;
-//float player_x, translate_x, translate_amount, rotate;
-GLuint playerTextureID, sunTextureID;
-glm::vec3 playerPosition = glm::vec3(0, 0, 0);
-glm::vec3 playerMovement  = glm::vec3(0, 0, 0);
+glm::mat4 viewMatrix, modelMatrixLeft, modelMatrixRight, modelMatrixPuck, projectionMatrix;
+glm::vec3 leftPlayerPosition = glm::vec3(0, 0, 0);
+glm::vec3 leftPlayerMovement  = glm::vec3(0, 0, 0);
+glm::vec3 rightPlayerPosition = glm::vec3(0, 0, 0);
+glm::vec3 rightPlayerMovement  = glm::vec3(0, 0, 0);
 float playerSpeed = 2.0f;
+glm::vec3 puckPosition = glm::vec3(0, 0, 0);
+glm::vec3 puckMovement = glm::vec3(0, 0, 0);
 
-GLuint LoadTexture(const char* filePath) {
-    int w, h, n;
-    unsigned char* image = stbi_load(filePath, &w, &h, &n, STBI_rgb_alpha);
-
-    if (image == NULL) {
-        std::cout << "Unable to load image. Make sure the path is correct \n";
-        assert(false);
+bool Collided(glm::vec3 paddlePos, glm::vec3 puckPos) {
+    float puckxLeft = puckPos.x - 0.25;
+    float puckxRight = puckPos.x + 0.25;
+    float puckyTop = puckPos.y + 0.25;
+    float puckyBottom = puckPos.y - 0.25;
+    float paddleTop = paddlePos.y + 1;
+    float paddleBottom = paddlePos.y - 1;
+    bool touch = false;
+    if ((puckyTop < paddleTop) and (puckyTop > paddleBottom)) {
+        touch = true;
     }
-
-    GLuint textureID;
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_2D, textureID);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-    stbi_image_free(image);
-    return textureID;
+    if ((puckyBottom < paddleTop) and (puckyBottom > paddleBottom)) {
+        touch = true;
+    }
+    if (((puckxRight >= 4.0f) or (puckxLeft <= -4.0f)) and touch) {
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
 void Initialize() {
     SDL_Init(SDL_INIT_VIDEO);
-    displayWindow = SDL_CreateWindow("Scene", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 640, SDL_WINDOW_OPENGL);
+    displayWindow = SDL_CreateWindow("Pong", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 640, SDL_WINDOW_OPENGL);
     SDL_GLContext context = SDL_GL_CreateContext(displayWindow);
     SDL_GL_MakeCurrent(displayWindow, context);
 
@@ -56,38 +59,34 @@ void Initialize() {
     glewInit();
 #endif
 
-    glViewport(0, 0, 640, 480);
+    glViewport(0, 0, 640, 640);
 
     program.Load("shaders/vertex_textured.glsl", "shaders/fragment_textured.glsl");
 
     viewMatrix = glm::mat4(1.0f);
-    modelMatrix = glm::mat4(1.0f);
-    modelMatrix2 = glm::mat4(1.0f);
-    projectionMatrix = glm::ortho(-5.0f, 5.0f, -3.75f, 3.75f, -1.0f, 1.0f);
+    modelMatrixLeft = glm::mat4(1.0f);
+    modelMatrixRight = glm::mat4(1.0f);
+    modelMatrixPuck = glm::mat4(1.0f);
+    projectionMatrix = glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, -1.0f, 1.0f);
 
     program.SetProjectionMatrix(projectionMatrix);
     program.SetViewMatrix(viewMatrix);
-    //program.SetColor(1.0f, 1.0f, 1.0f, 1.0f);
-
-//    player_x = -3.5f;
-//    translate_x = 0.0f;
-//    translate_amount = 1.6f;
-//    rotate = 0.0f;
 
     glUseProgram(program.programID);
 
-    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
     glEnable(GL_BLEND);
-    // Good setting for transparency
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    playerTextureID = LoadTexture("ctg.png");
-    sunTextureID = LoadTexture("sun.png");
 }
 
 void ProcessInput() {
-    playerMovement  = glm::vec3(0);
+    leftPlayerMovement = glm::vec3(0);
+    rightPlayerMovement = glm::vec3(0);
+    float upSpeed = 1.0f;
+    float upHoldSpeed = 4.0f;
+    float downSpeed = -1.0f;
+    float downHoldSpeed = -4.0f;
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
@@ -97,14 +96,21 @@ void ProcessInput() {
                 break;
             case SDL_KEYDOWN:
                 switch (event.key.keysym.sym) {
-                    case SDLK_LEFT:
-                        playerMovement.x = -1.0f;
+                    case SDLK_w:
+                        leftPlayerMovement.y = upSpeed;
                         break;
-                    case SDLK_RIGHT:
-                        playerMovement.x = 1.0f;
+                    case SDLK_s:
+                        leftPlayerMovement.y = downSpeed;
+                        break;
+                    case SDLK_UP:
+                        rightPlayerMovement.y = upSpeed;
+                        break;
+                    case SDLK_DOWN:
+                        rightPlayerMovement.y = downSpeed;
                         break;
                     case SDLK_SPACE:
-                        // Some sort of action
+                        puckMovement.x = -0.6;
+                        puckMovement.y = -0.6;
                         break;
                 }
             break; // SDL_KEYDOWN
@@ -112,16 +118,28 @@ void ProcessInput() {
     }
     const Uint8 *keys = SDL_GetKeyboardState(NULL);
     
-    if (keys[SDL_SCANCODE_LEFT]) {
-        playerMovement.x = -3.0f;
+    if (keys[SDL_SCANCODE_W]) {
+        leftPlayerMovement.y = upHoldSpeed;
     }
     
-    else if (keys[SDL_SCANCODE_RIGHT]) {
-        playerMovement.x = 3.0f;
+    else if (keys[SDL_SCANCODE_S]) {
+        leftPlayerMovement.y = downHoldSpeed;
     }
     
-    if (glm::length(playerMovement) > 1.0f) {
-        playerMovement = glm::normalize(playerMovement);
+    if (keys[SDL_SCANCODE_UP]) {
+        rightPlayerMovement.y = upHoldSpeed;
+    }
+    
+    else if (keys[SDL_SCANCODE_DOWN]) {
+        rightPlayerMovement.y = downHoldSpeed;
+    }
+    
+    if (glm::length(leftPlayerMovement) > 1.0f) {
+        leftPlayerMovement = glm::normalize(leftPlayerMovement);
+    }
+    
+    if (glm::length(rightPlayerMovement) > 1.0f) {
+        rightPlayerMovement = glm::normalize(rightPlayerMovement);
     }
 }
 
@@ -131,58 +149,91 @@ void Update() {
     float ticks = (float)SDL_GetTicks() / 1000.0f;
     float deltaTime = ticks - lastTicks;
     lastTicks = ticks;
+    //puckMovement = glm::vec3(0);
     
-//    translate_x += translate_amount * deltaTime;
-//    rotate += 0.5f * deltaTime;
-//    player_x += translate_x;
+    leftPlayerPosition += leftPlayerMovement * playerSpeed * deltaTime;
+    rightPlayerPosition += rightPlayerMovement * playerSpeed * deltaTime;
+    puckPosition += puckMovement * playerSpeed * deltaTime;
     
-    playerPosition += playerMovement * playerSpeed * deltaTime;
-    
-//    if (player_x >= 70.0f) {
-//        translate_amount = -1.6f;
-//    }
-//    if (player_x <= 0.0f) {
-//        translate_amount = 1.6f;
-//    }
-    
-    modelMatrix = glm::mat4(1.0f);
-    //modelMatrix2 = glm::mat4(1.0f);
-    //modelMatrix = glm::translate(modelMatrix, glm::vec3(translate_x, 0.0f, 0.0f));
-    modelMatrix = glm::translate(modelMatrix, playerPosition);
-    //modelMatrix2 = glm::rotate(modelMatrix2, glm::radians(rotate), glm::vec3(0.0f, 0.0f, 1.0f));
+    modelMatrixLeft = glm::mat4(1.0f);
+    modelMatrixRight = glm::mat4(1.0f);
+    modelMatrixPuck = glm::mat4(1.0f);
+    if (leftPlayerPosition.y < 4.0f and leftPlayerPosition.y > -4.0f) {
+        modelMatrixLeft = glm::translate(modelMatrixLeft, leftPlayerPosition);
+    }
+    else if (leftPlayerPosition.y >= 4.0f){
+        leftPlayerPosition = glm::vec3(0, 4, 0);
+        modelMatrixLeft = glm::translate(modelMatrixLeft, leftPlayerPosition);
+    }
+    else if (leftPlayerPosition.y <= -4.0f){
+        leftPlayerPosition = glm::vec3(0, -4, 0);
+        modelMatrixLeft = glm::translate(modelMatrixLeft, leftPlayerPosition);
+    }
+    if (rightPlayerPosition.y < 4.0f and rightPlayerPosition.y > -4.0f) {
+        modelMatrixRight = glm::translate(modelMatrixRight, rightPlayerPosition);
+    }
+    else if (rightPlayerPosition.y >= 4.0f){
+        rightPlayerPosition = glm::vec3(0, 4, 0);
+        modelMatrixRight = glm::translate(modelMatrixRight, rightPlayerPosition);
+    }
+    else if (rightPlayerPosition.y <= -4.0f){
+        rightPlayerPosition = glm::vec3(0, -4, 0);
+        modelMatrixRight = glm::translate(modelMatrixRight, rightPlayerPosition);
+    }
+    if (Collided(leftPlayerPosition, puckPosition) or Collided(rightPlayerPosition, puckPosition)) {
+        puckMovement.x = -1 * puckMovement.x;
+    }
+    else if (fabs(puckPosition.y) >= 4.5f) {
+        puckMovement.y = -1 * puckMovement.y;
+    }
+    else if (fabs(puckPosition.x) >= 4.0f) {
+        SDL_Quit();
+    }
+    modelMatrixPuck = glm::translate(modelMatrixPuck, puckPosition);
 }
 
 void Render() {
     glClear(GL_COLOR_BUFFER_BIT);
 
-    program.SetModelMatrix(modelMatrix);
+    program.SetModelMatrix(modelMatrixLeft);
 
-    float vertices[] = { -4.0f, -4.0f, -2.0f, -4.0f, -2.0f, -2.0f, -4.0f, -4.0f, -4.0f, -2.0f, -2.0f, -2.0f };
-    float texCoords[] = { 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f };
+    float leftVertices[] = { -5.0f, -1.0f, -5.0f, 1.0f, -4.0f, 1.0f, -5.0f, -1.0f, -4.0f, -1.0f, -4.0f, 1.0f };
+    float leftTexCoords[] = { 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f };
 
-    glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, vertices);
+    glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, leftVertices);
     glEnableVertexAttribArray(program.positionAttribute);
-    glVertexAttribPointer(program.texCoordAttribute, 2, GL_FLOAT, false, 0, texCoords);
+    glVertexAttribPointer(program.texCoordAttribute, 2, GL_FLOAT, false, 0, leftTexCoords);
     glEnableVertexAttribArray(program.texCoordAttribute);
 
-    glBindTexture(GL_TEXTURE_2D, playerTextureID);
+    //glBindTexture(GL_TEXTURE_2D, playerTextureID);
     glDrawArrays(GL_TRIANGLES, 0, 6);
+    
+    program.SetModelMatrix(modelMatrixRight);
 
-    glDisableVertexAttribArray(program.positionAttribute);
-    glDisableVertexAttribArray(program.texCoordAttribute);
+    float rightVertices[] = { 5.0f, -1.0f, 5.0f, 1.0f, 4.0f, 1.0f, 5.0f, -1.0f, 4.0f, -1.0f, 4.0f, 1.0f};
+    float rightTexCoords[] = { 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f };
 
-    program.SetModelMatrix(modelMatrix2);
-
-    float vertices2[] = { -4.0f, 2.0f, -4.0f, 4.0f, -2.0f, 4.0f, -4.0f, 2.0f, -2.0f, 2.0f, -2.0f, 4.0f };
-    float texCoords2[] = { 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f };
-
-    glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, vertices2);
+    glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, rightVertices);
     glEnableVertexAttribArray(program.positionAttribute);
-    glVertexAttribPointer(program.texCoordAttribute, 2, GL_FLOAT, false, 0, texCoords2);
+    glVertexAttribPointer(program.texCoordAttribute, 2, GL_FLOAT, false, 0, rightTexCoords);
     glEnableVertexAttribArray(program.texCoordAttribute);
 
-    glBindTexture(GL_TEXTURE_2D, sunTextureID);
+    //glBindTexture(GL_TEXTURE_2D, sunTextureID);
     glDrawArrays(GL_TRIANGLES, 0, 6);
+    
+    program.SetModelMatrix(modelMatrixPuck);
+
+    float puckVertices[] = { -0.25f, -0.25f, -0.25f, 0.25f, 0.25f, 0.25f, -0.25f, -0.25f, 0.25f, -0.25f, 0.25f, 0.25f};
+    float puckTexCoords[] = { 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f };
+
+    glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, puckVertices);
+    glEnableVertexAttribArray(program.positionAttribute);
+    glVertexAttribPointer(program.texCoordAttribute, 2, GL_FLOAT, false, 0, puckTexCoords);
+    glEnableVertexAttribArray(program.texCoordAttribute);
+
+    //glBindTexture(GL_TEXTURE_2D, sunTextureID);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+
 
     glDisableVertexAttribArray(program.positionAttribute);
     glDisableVertexAttribArray(program.texCoordAttribute);
