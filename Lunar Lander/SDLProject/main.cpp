@@ -90,10 +90,7 @@ void Initialize() {
     state.player->speed = 0.7f;
     state.player->textureID = LoadTexture("Lander.png");
     
-//    state.player->animRight = new int[4] {3, 7, 11, 15};
-//    state.player->animLeft = new int[4] {1, 5, 9, 13};
     state.player->animUp = new int[2] {1, 0};
-//    state.player->animDown = new int[4] {0, 4, 8, 12};
 
     state.player->animIndices = state.player->animUp;
     state.player->animFrames = 2;
@@ -146,14 +143,6 @@ void Initialize() {
     for (int i = 0; i < PLATFORM_COUNT; i++) {
         state.platforms[i].Update(0, NULL, 0);
     }
-    
-//    state.landingPad = new Entity;
-//
-//    GLuint landingPadTextureID = LoadTexture("LandingPad.png");
-//
-//    state.landingPad->textureID = landingPadTextureID;
-//    state.landingPad->position = glm::vec3(3, -3.25f, 0);
-//    state.landingPad->Update(0, NULL, 0);
 }
 
 void ProcessInput() {
@@ -181,10 +170,9 @@ void ProcessInput() {
                     case SDLK_SPACE:
                         state.player->jump = true;
                         state.player->animIndices = state.player->animUp;
-                        //state.player->animIndices = state.player->animUp;
                         break;
                 }
-                break; // SDL_KEYDOWN
+                break;
         }
     }
     
@@ -237,9 +225,6 @@ void Render() {
     state.player->Render(&program, 1);
     
     if (state.player->isActive == false and state.player->landingSuccessful == false) {
-    
-        //state.text = new Entity[13];
-        
         GLuint fontID = LoadTexture("Font.png");
         
         int characterIndex[] = {77, 105, 115, 115, 105, 111, 110, 70, 97, 105, 108, 101, 100};
@@ -277,9 +262,6 @@ void Render() {
         }
     }
     else if (state.player->isActive == false and state.player->landingSuccessful == true) {
-    
-        //state.text = new Entity[13];
-        
         GLuint fontID = LoadTexture("Font.png");
         
         int characterIndex[] = {77, 105, 115, 115, 105, 111, 110, 83, 117, 99, 99, 101, 115, 102, 117, 108};
@@ -318,7 +300,6 @@ void Render() {
     }
     SDL_GL_SwapWindow(displayWindow);
 }
-
 
 void Shutdown() {
     SDL_Quit();

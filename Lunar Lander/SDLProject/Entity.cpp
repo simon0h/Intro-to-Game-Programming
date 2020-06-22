@@ -38,7 +38,6 @@ void Entity::CheckCollisionsX(Entity *objects, int objectCount) {
                 position.x += penetrationX;
                 velocity.x = 0;
                 collidedLeft = true;
-                // what did i collide with 
             }
         }
     }
@@ -63,7 +62,6 @@ void Entity::CheckCollisionsY(Entity *objects, int objectCount) {
                 isActive = false;
                 if (position.x > 2.50f and position.x < 3.50f) {
                     landingSuccessful = true;
-                    std::cout << "Landing successful\n";
                 }
             }
         }
