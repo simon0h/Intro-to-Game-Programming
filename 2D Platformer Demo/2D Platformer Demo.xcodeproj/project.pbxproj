@@ -18,6 +18,7 @@
 		F4B7C044249E04FE00E41421 /* Entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4B7C042249E04FE00E41421 /* Entity.cpp */; };
 		F4B7C046249E06E200E41421 /* george_0.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = F4B7C045249E066C00E41421 /* george_0.png */; };
 		F4B7C049249E0EFA00E41421 /* platformPack_tile001.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = F4B7C048249E0EEF00E41421 /* platformPack_tile001.png */; };
+		F4B7C06724AAAC4000E41421 /* ctg.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = F4B7C06624AAAB9C00E41421 /* ctg.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -29,6 +30,7 @@
 			files = (
 				F4B7C049249E0EFA00E41421 /* platformPack_tile001.png in CopyFiles */,
 				F4B7C046249E06E200E41421 /* george_0.png in CopyFiles */,
+				F4B7C06724AAAC4000E41421 /* ctg.png in CopyFiles */,
 				DBDF1B612323DE9E007CECB1 /* shaders in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -52,6 +54,7 @@
 		F4B7C045249E066C00E41421 /* george_0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = george_0.png; sourceTree = "<group>"; };
 		F4B7C047249E0CB400E41421 /* Entity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Entity.h; sourceTree = "<group>"; };
 		F4B7C048249E0EEF00E41421 /* platformPack_tile001.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = platformPack_tile001.png; sourceTree = "<group>"; };
+		F4B7C06624AAAB9C00E41421 /* ctg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ctg.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,6 +95,7 @@
 			children = (
 				F4B7C048249E0EEF00E41421 /* platformPack_tile001.png */,
 				F4B7C045249E066C00E41421 /* george_0.png */,
+				F4B7C06624AAAB9C00E41421 /* ctg.png */,
 				F4B7C042249E04FE00E41421 /* Entity.cpp */,
 				F4B7C047249E0CB400E41421 /* Entity.h */,
 				DBDF1B5B2323DE8D007CECB1 /* glm */,
@@ -150,7 +154,7 @@
 					};
 				};
 			};
-			buildConfigurationList = DBDF1B4A2323DE3F007CECB1 /* Build configuration list for PBXProject "Lunar Lander" */;
+			buildConfigurationList = DBDF1B4A2323DE3F007CECB1 /* Build configuration list for PBXProject "2D Platformer Demo" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -296,6 +300,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
@@ -313,6 +318,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
@@ -329,7 +335,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		DBDF1B4A2323DE3F007CECB1 /* Build configuration list for PBXProject "Lunar Lander" */ = {
+		DBDF1B4A2323DE3F007CECB1 /* Build configuration list for PBXProject "2D Platformer Demo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DBDF1B542323DE3F007CECB1 /* Debug */,
