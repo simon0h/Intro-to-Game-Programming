@@ -10,6 +10,7 @@
 #include "glm/mat4x4.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "ShaderProgram.h"
+#include <vector>
 
 enum EntityType {PLAYER, PLATFORM, ENEMY};
 
@@ -66,6 +67,7 @@ public:
     void Update(float deltaTime, Entity *player, Entity *enemies, Entity *platforms, int enemyCount, int platformCount);
     void Render(ShaderProgram *program);
     void DrawSpriteFromTextureAtlas(ShaderProgram *program, GLuint textureID, int index);
+    void DrawText(ShaderProgram *program, GLuint fontTextureID, std::string text, float size, float spacing, glm::vec3 position);
     
     void AI(Entity *player);
     void AIWalker();

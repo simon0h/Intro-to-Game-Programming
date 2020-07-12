@@ -82,11 +82,7 @@ void Initialize() {
     glEnable(GL_BLEND);
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    
-   
-    // Initialize Game Objects
-    
-    // Initialize Player
+
     state.player = new Entity();
     state.player->entityType = PLAYER;
     state.player->position = glm::vec3(-4, -2, 0);
@@ -175,20 +171,16 @@ void ProcessInput() {
             case SDL_KEYDOWN:
                 switch (event.key.keysym.sym) {
                     case SDLK_LEFT:
-                        // Move the player left
                         break;
-                        
                     case SDLK_RIGHT:
-                        // Move the player right
                         break;
-                        
                     case SDLK_SPACE:
                         if (state.player-> collidedBottom) {
                             state.player->jump = true;
                         }
                         break;
                 }
-                break; // SDL_KEYDOWN
+                break;
         }
     }
     
@@ -223,7 +215,6 @@ void Update() {
         return;
     }
     while (deltaTime >= FIXED_TIMESTEP) {
-        // Update. Notice it's FIXED_TIMESTEP. Not deltaTime
         state.player->Update(FIXED_TIMESTEP, state.player, state.enemies, state.platforms, ENEMY_COUNT, PLATFORM_COUNT);
         
         for (int i = 0; i < ENEMY_COUNT; i++) {
@@ -251,40 +242,8 @@ void Render() {
     
     if (state.player->isActive == false) {
         GLuint fontID = LoadTexture("Font.png");
-        
-        int characterIndex[] = {71, 97, 109, 101, 79, 118, 101, 114};
-        float originVertices[]  = { -3.0, 4.0, -2.0, 4.0, -2.0, 5.0, -3.0, 4.0, -2.0, 5.0, -3.0, 5.0 };
-        float offset = 0;
-        float yCoords = 4.0;
-        
-        for (int i = 0; i < 8; i++) {
-            float u = (float)(characterIndex[i] % 16) / 16.0f;
-            float v = (float)(characterIndex[i] / 16) / 16.0f;
-
-            float width = 1.0f / 16.0f;
-            float height = 1.0f / 16.0f;
-            
-            if (i == 4) {
-                yCoords -= 1.0;
-                offset = -4;
-            }
-
-            float texCoords[] = { u, v + height, u + width, v + height, u + width, v, u, v + height, u + width, v, u, v};
-            float vertices[]  = { originVertices[0] + i + offset - state.enemies[2].position.x, yCoords, originVertices[2] + i + offset - state.enemies[2].position.x, yCoords, originVertices[4] + i + offset - state.enemies[2].position.x, yCoords + 1, originVertices[6] + i + offset - state.enemies[2].position.x, yCoords, originVertices[8] + i + offset - state.enemies[2].position.x, yCoords + 1, originVertices[10] + i + offset - state.enemies[2].position.x, yCoords + 1 };
-
-            glBindTexture(GL_TEXTURE_2D, fontID);
-
-            glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, vertices);
-            glEnableVertexAttribArray(program.positionAttribute);
-
-            glVertexAttribPointer(program.texCoordAttribute, 2, GL_FLOAT, false, 0, texCoords);
-            glEnableVertexAttribArray(program.texCoordAttribute);
-
-            glDrawArrays(GL_TRIANGLES, 0, 6);
-
-            glDisableVertexAttribArray(program.positionAttribute);
-            glDisableVertexAttribArray(program.texCoordAttribute);
-        }
+        state.player->DrawText(&program, fontID, "Game", 1.3f, 0, glm::vec3(-2.2f, 2.3f, 0));
+        state.player->DrawText(&program, fontID, "Over", 1.3f, 0, glm::vec3(-2.2f, 1, 0));
     }
     
     for (int i = 0; i < ENEMY_COUNT; i++) {
@@ -295,35 +254,7 @@ void Render() {
     
     if (allEnemiesDead == true) {
         GLuint fontID = LoadTexture("Font.png");
-        
-        int characterIndex[] = {89, 111, 117, 0, 119, 105, 110};
-        float originVertices[]  = { -3.0, 4.0, -2.0, 4.0, -2.0, 5.0, -3.0, 4.0, -2.0, 5.0, -3.0, 5.0 };
-        float offset = 0;
-        float yCoords = 4.0;
-        
-        for (int i = 0; i < 7; i++) {
-            float u = (float)(characterIndex[i] % 16) / 16.0f;
-            float v = (float)(characterIndex[i] / 16) / 16.0f;
-
-            float width = 1.0f / 16.0f;
-            float height = 1.0f / 16.0f;
-
-            float texCoords[] = { u, v + height, u + width, v + height, u + width, v, u, v + height, u + width, v, u, v};
-            float vertices[]  = { originVertices[0] + i + offset - state.player->position.x, yCoords, originVertices[2] + i + offset - state.player->position.x, yCoords, originVertices[4] + i + offset - state.player->position.x, yCoords + 1, originVertices[6] + i + offset - state.player->position.x, yCoords, originVertices[8] + i + offset - state.player->position.x, yCoords + 1, originVertices[10] + i + offset - state.player->position.x, yCoords + 1 };
-
-            glBindTexture(GL_TEXTURE_2D, fontID);
-
-            glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, vertices);
-            glEnableVertexAttribArray(program.positionAttribute);
-
-            glVertexAttribPointer(program.texCoordAttribute, 2, GL_FLOAT, false, 0, texCoords);
-            glEnableVertexAttribArray(program.texCoordAttribute);
-
-            glDrawArrays(GL_TRIANGLES, 0, 6);
-
-            glDisableVertexAttribArray(program.positionAttribute);
-            glDisableVertexAttribArray(program.texCoordAttribute);
-        }
+        state.player->DrawText(&program, fontID, "You win", 1, 0, glm::vec3(-2.9f, 2.3f, 0));
     }
     
     SDL_GL_SwapWindow(displayWindow);
