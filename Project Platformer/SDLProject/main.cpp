@@ -127,6 +127,16 @@ void ProcessInput() {
         currentScene->state.player->movement.x = 1.0f;
         currentScene->state.player->animIndices = currentScene->state.player->animRight;
     }
+    else if (keys[SDL_SCANCODE_UP]) {
+        goingRight = false;
+        currentScene->state.player->movement.y = 1.0f;
+        currentScene->state.player->animIndices = currentScene->state.player->animUp;
+    }
+    else if (keys[SDL_SCANCODE_DOWN]) {
+        goingRight = false;
+        currentScene->state.player->movement.y = -1.0f;
+        currentScene->state.player->animIndices = currentScene->state.player->animDown;
+    }
 //    else {
 //        if (goingRight) {
 //            
