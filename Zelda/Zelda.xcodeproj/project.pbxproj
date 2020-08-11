@@ -18,6 +18,7 @@
 		F471C28D24D63B7E00888205 /* link.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = F471C28C24D63B6A00888205 /* link.png */; };
 		F471C29124D695AE00888205 /* theme.mp3 in CopyFiles */ = {isa = PBXBuildFile; fileRef = F471C29024D6958700888205 /* theme.mp3 */; };
 		F471C29524D69B4300888205 /* font.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = F471C29424D69B3700888205 /* font.png */; };
+		F477060324E234E400C3D003 /* sword.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = F477060224E234DB00C3D003 /* sword.png */; };
 		F47E6D8A24CEC1C6008E3BFD /* Level1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F47E6D8824CEC1C6008E3BFD /* Level1.cpp */; };
 		F47E6D9024CEC8CB008E3BFD /* Level2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F47E6D8E24CEC8CB008E3BFD /* Level2.cpp */; };
 		F47E6D9324D10D32008E3BFD /* Level3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F47E6D9124D10D32008E3BFD /* Level3.cpp */; };
@@ -35,11 +36,12 @@
 			dstPath = "";
 			dstSubfolderSpec = 6;
 			files = (
-				F471C29124D695AE00888205 /* theme.mp3 in CopyFiles */,
 				DBDF1B612323DE9E007CECB1 /* shaders in CopyFiles */,
 				F471C29524D69B4300888205 /* font.png in CopyFiles */,
-				F48B0B0624DF9A2500C29BA5 /* tiles.png in CopyFiles */,
 				F471C28D24D63B7E00888205 /* link.png in CopyFiles */,
+				F477060324E234E400C3D003 /* sword.png in CopyFiles */,
+				F48B0B0624DF9A2500C29BA5 /* tiles.png in CopyFiles */,
+				F471C29124D695AE00888205 /* theme.mp3 in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -61,6 +63,7 @@
 		F471C28C24D63B6A00888205 /* link.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = link.png; sourceTree = "<group>"; };
 		F471C29024D6958700888205 /* theme.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = theme.mp3; sourceTree = "<group>"; };
 		F471C29424D69B3700888205 /* font.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = font.png; sourceTree = "<group>"; };
+		F477060224E234DB00C3D003 /* sword.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sword.png; sourceTree = "<group>"; };
 		F47E6D8824CEC1C6008E3BFD /* Level1.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Level1.cpp; sourceTree = "<group>"; };
 		F47E6D8924CEC1C6008E3BFD /* Level1.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Level1.h; sourceTree = "<group>"; };
 		F47E6D8E24CEC8CB008E3BFD /* Level2.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Level2.cpp; sourceTree = "<group>"; };
@@ -136,6 +139,7 @@
 				DBDF1B5A2323DE8D007CECB1 /* stb_image.h */,
 				F471C29424D69B3700888205 /* font.png */,
 				F471C28C24D63B6A00888205 /* link.png */,
+				F477060224E234DB00C3D003 /* sword.png */,
 				F48B0B0524DF9A1500C29BA5 /* tiles.png */,
 				F471C29024D6958700888205 /* theme.mp3 */,
 			);

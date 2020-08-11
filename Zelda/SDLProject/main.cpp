@@ -23,7 +23,6 @@
 #define FIXED_TIMESTEP 0.0166666f
 float lastTicks = 0;
 float accumulator = 0.0f;
-bool goingRight = true;
 
 SDL_Window* displayWindow;
 bool gameIsRunning = true;
@@ -67,7 +66,6 @@ void Initialize() {
     
     glUseProgram(program.programID);
     
-    //glClearColor(255.0f, 192.0f, 122.0f, 1.0f);
     glClearColor(1.0f, 0.7529f, 0.4784f, 1.0f);
     glEnable(GL_BLEND);
 
@@ -81,8 +79,6 @@ void Initialize() {
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
     music = Mix_LoadMUS("theme.mp3");
     Mix_PlayMusic(music, -1);
-    
-    //jump = Mix_LoadWAV("jump.wav");
 }
 
 void ProcessInput() {
@@ -96,7 +92,6 @@ void ProcessInput() {
             case SDL_WINDOWEVENT_CLOSE:
                 gameIsRunning = false;
                 break;
-                
             case SDL_KEYDOWN:
                 switch (event.key.keysym.sym) {
                     case SDLK_LEFT:
@@ -110,21 +105,21 @@ void ProcessInput() {
                             if (currentScene->state.player->lookingLeft) {
                                 currentScene->state.player->animIndices = currentScene->state.player->animLeftAttack;
                             }
-                            else if (currentScene->state.player->lookingRight) {
+                            if (currentScene->state.player->lookingRight) {
                                 currentScene->state.player->animIndices = currentScene->state.player->animRightAttack;
                             }
-                            else if (currentScene->state.player->lookingDown) {
-                                currentScene->state.player->animIndices = currentScene->state.player->animDownAttack;
-                            }
-                            else if (currentScene->state.player->lookingUp) {
+                            if (currentScene->state.player->lookingUp) {
                                 currentScene->state.player->animIndices = currentScene->state.player->animUpAttack;
+                            }
+                            if (currentScene->state.player->lookingDown) {
+                                currentScene->state.player->animIndices = currentScene->state.player->animDownAttack;
                             }
                         }
                         break;
                     case SDLK_RETURN:
                         currentScene->state.player->startGame = true;
                 }
-                break;
+            break;
         }
     }
     
@@ -133,36 +128,32 @@ void ProcessInput() {
     if (keys[SDL_SCANCODE_LEFT]) {
         currentScene->state.player->lookingLeft = true;
         currentScene->state.player->lookingRight = false;
-        currentScene->state.player->lookingDown = false;
         currentScene->state.player->lookingUp = false;
-        goingRight = false;
+        currentScene->state.player->lookingDown = false;
         currentScene->state.player->movement.x = -1.0f;
         currentScene->state.player->animIndices = currentScene->state.player->animLeft;
     }
     else if (keys[SDL_SCANCODE_RIGHT]) {
         currentScene->state.player->lookingLeft = false;
         currentScene->state.player->lookingRight = true;
-        currentScene->state.player->lookingDown = false;
         currentScene->state.player->lookingUp = false;
-        goingRight = true;
+        currentScene->state.player->lookingDown = false;
         currentScene->state.player->movement.x = 1.0f;
         currentScene->state.player->animIndices = currentScene->state.player->animRight;
     }
     else if (keys[SDL_SCANCODE_UP]) {
         currentScene->state.player->lookingLeft = false;
         currentScene->state.player->lookingRight = false;
-        currentScene->state.player->lookingDown = false;
         currentScene->state.player->lookingUp = true;
-        goingRight = true;
+        currentScene->state.player->lookingDown = false;
         currentScene->state.player->movement.y = 1.0f;
         currentScene->state.player->animIndices = currentScene->state.player->animUp;
     }
     else if (keys[SDL_SCANCODE_DOWN]) {
         currentScene->state.player->lookingLeft = false;
         currentScene->state.player->lookingRight = false;
-        currentScene->state.player->lookingDown = true;
         currentScene->state.player->lookingUp = false;
-        goingRight = true;
+        currentScene->state.player->lookingDown = true;
         currentScene->state.player->movement.y = -1.0f;
         currentScene->state.player->animIndices = currentScene->state.player->animDown;
     }
@@ -216,7 +207,6 @@ void Update() {
             viewMatrix = glm::translate(viewMatrix, glm::vec3(0, currentScene->state.map->getMapHeight() - 4.5, 0));
         }
     }
-    //std::cout << currentScene->state.player->position.x << ", " << currentScene->state.player->position.y << ", " << currentScene->state.map->getMapHeight() <<  "\n";
 }
 
 void Render() {

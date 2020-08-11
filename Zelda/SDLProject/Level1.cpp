@@ -9,9 +9,9 @@ unsigned int level1_data[] = {
     91, 55, 55, 55, 55, 55, 55, 55, 55, 91, 91, 91, 91, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 91, 91, 55, 55, 55, 55, 55,
     91, 55,  0,  0,  0,  0,  0,  0, 55, 91, 91, 91, 91, 55,  0,  0,  0,  0,  0,  0,  0,  0, 55, 91, 91, 55,  3,  4,  5, 55,
     91, 55,  0,  0,  0,  0,  0,  0, 55, 91, 91, 91, 91, 55,  0,  0,  0,  0,  0,  0,  0,  0, 55, 91, 91, 55, 21, 22, 23, 55,
-    91, 55,  0,  0,  0,  0,  0,  0,  0, 55, 55, 55, 55, 55,  0,  0,  0,  0,  0,  0,  0,  0, 55, 91, 91, 55,  0,  0,  0, 55,
-    91, 55,  0,  0, 55,  0, 55,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 55, 91, 91, 55,  0,  0,  0, 55,
-    91, 55,  0,  0,  0,  0,  0,  0,  0, 55, 55, 55, 55, 55,  0,  0,  0,  0,  0,  0,  0,  0, 55, 91, 91, 55,  0,  0,  0, 55,
+    91, 55,  0,  0,  0,  0,  0,  0, 55, 55, 55, 55, 55, 55,  0,  0,  0,  0,  0,  0,  0,  0, 55, 91, 91, 55,  0,  0,  0, 55,
+    91, 55,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 55, 91, 91, 55,  0,  0,  0, 55,
+    91, 55,  0,  0,  0,  0,  0,  0, 55, 55, 55, 55, 55, 55,  0,  0,  0,  0,  0,  0,  0,  0, 55, 91, 91, 55,  0,  0,  0, 55,
     91, 55,  0,  0,  0,  0,  0,  0, 55, 91, 91, 91, 91, 55,  0,  0,  0,  0,  0,  0,  0,  0, 55, 91, 91, 55,  0,  0,  0, 55,
     91, 55,  0,  0,  0,  0,  0,  0, 55, 91, 91, 91, 91, 55,  0,  0,  0,  0,  0,  0,  0,  0, 55, 91, 91, 55,  0,  0,  0, 55,
     91, 55, 55,  0,  0, 55, 55, 55, 55, 91, 91, 91, 91, 55, 55, 55, 55,  0,  0, 55, 55, 55, 55, 91, 91, 55,  0,  0,  0, 55,
@@ -40,19 +40,18 @@ void Level1::Initialize() {
     state.player->entityType = PLAYER;
     state.player->position = glm::vec3(4, -4, 0);
     state.player->movement = glm::vec3(0);
-    //state.player->acceleration = glm::vec3(0, -9.81f, 0);
     state.player->speed = 2.5f;
     state.player->textureID = Util::LoadTexture("link.png");
     
-    state.player->animRight = new int[2] {18, 3};
     state.player->animLeft = new int[2] {16, 1};
+    state.player->animRight = new int[2] {18, 3};
     state.player->animUp = new int[2] {2, 17};
     state.player->animDown = new int[2] {0, 15};
     
-    state.player->animRightAttack = new int[2] {48, 3};
     state.player->animLeftAttack = new int[2] {46, 1};
-    state.player->animUpAttack = new int[2] {2, 37};
-    state.player->animDownAttack = new int[2] {0, 35};
+    state.player->animRightAttack = new int[2] {48, 3};
+    state.player->animUpAttack = new int[2] {47, 2};
+    state.player->animDownAttack = new int[2] {45, 0};
 
     state.player->animIndices = state.player->animRight;
     state.player->animFrames = 2;
@@ -61,8 +60,15 @@ void Level1::Initialize() {
     state.player->animCols = 15;
     state.player->animRows = 11;
     state.player->height = 0.5f;
-    state.player->width = 1;
-    state.player->jumpPower = 7;
+    state.player->width = 0.5f;
+    
+    // Initialize weapon
+    state.weapon = new Entity();
+    state.weapon->entityType = WEAPON;
+    state.weapon->position = glm::vec3(3.75f, -16, 0);
+    state.weapon->textureID = Util::LoadTexture("sword.png");
+    state.weapon->height = 0.7f;
+    state.weapon->width = 0.3f;
     
     // Initialize Enemies
     state.enemies = new Entity[LEVEL_1_ENEMY_COUNT];
@@ -91,6 +97,8 @@ void Level1::Initialize() {
 }
 void Level1::Update(float deltaTime) {
     state.player->Update(deltaTime, state.player, state.enemies, LEVEL_1_ENEMY_COUNT, state.map);
+    state.player->Update(deltaTime, state.player, state.weapon, 1, state.map);
+    state.weapon->Update(deltaTime, state.weapon, state.player, 1, state.map);
     state.enemies[0].Update(deltaTime, state.enemies, state.player, 1, state.map);
     
     if (state.player->position.x > 27 and state.player->position.x < 27.375 and state.player->position.y == -2.75) {
@@ -114,6 +122,7 @@ void Level1::Render(ShaderProgram *program) {
     else {
         state.map->Render(program);
         state.player->Render(program);
+        state.weapon->Render(program);
         state.enemies[0].Render(program);
     }
 }

@@ -22,8 +22,8 @@ void Map::Build() {
             float u = (float)(tile % tile_count_x) / (float)tile_count_x + 0.005f;
             float v = (float)(tile / tile_count_x) / (float)tile_count_y + 0.005f;
             
-            float tileWidth = (1.0f/(float)tile_count_x) - 0.01f;
-            float tileHeight = (1.0f/(float)tile_count_y) - 0.01f;
+            float tileWidth = (1.0f/(float)tile_count_x) - 0.005f;
+            float tileHeight = (1.0f/(float)tile_count_y) - 0.005f;
             
             float xoffset = -(tile_size / 2); // From center of tile
             float yoffset = (tile_size / 2); // From center

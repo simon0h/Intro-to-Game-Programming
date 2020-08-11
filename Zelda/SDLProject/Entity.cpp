@@ -40,6 +40,10 @@ void Entity::CheckCollisionsX(Entity *objects, int objectCount) {
                     modelMatrix = glm::mat4(1.0f);
                     modelMatrix = glm::translate(modelMatrix, position);
                 }
+                if (objects->entityType == WEAPON) {
+                    object->isActive = false;
+                    holdingWeapon = true;
+                }
             }
             else if (velocity.x < 0) {
                 position.x += penetrationX;
@@ -51,13 +55,16 @@ void Entity::CheckCollisionsX(Entity *objects, int objectCount) {
                     modelMatrix = glm::mat4(1.0f);
                     modelMatrix = glm::translate(modelMatrix, position);
                 }
+                if (objects->entityType == WEAPON) {
+                    object->isActive = false;
+                    holdingWeapon = true;
+                }
             }
         }
     }
 }
 
 void Entity::CheckCollisionsX(Map *map) {
-    // Probes for tiles
     glm::vec3 left = glm::vec3(position.x - (width / 2), position.y, position.z);
     glm::vec3 right = glm::vec3(position.x + (width / 2), position.y, position.z);
     float penetration_x = 0;
@@ -84,6 +91,10 @@ void Entity::CheckCollisionsY(Entity *objects, int objectCount) {
                 position.y -= penetrationY;
                 velocity.y = 0;
                 collidedTop = true;
+                if (objects->entityType == WEAPON) {
+                    object->isActive = false;
+                    holdingWeapon = true;
+                }
             }
             else if (velocity.y < 0) {
                 position.y += penetrationY;
@@ -92,13 +103,16 @@ void Entity::CheckCollisionsY(Entity *objects, int objectCount) {
                 if (object->entityType == ENEMY) {
                     object->isActive = false;
                 }
+                if (objects->entityType == WEAPON) {
+                    object->isActive = false;
+                    holdingWeapon = true;
+                }
             }
         }
     }
 }
 
 void Entity::CheckCollisionsY(Map *map) {
-    // Probes for tiles
     glm::vec3 top = glm::vec3(position.x, position.y + (height / 2), position.z);
     glm::vec3 top_left = glm::vec3(position.x - (width / 2), position.y + (height / 2), position.z);
     glm::vec3 top_right = glm::vec3(position.x + (width / 2), position.y + (height / 2), position.z);
@@ -203,7 +217,6 @@ void Entity::Update(float deltaTime, Entity *player, Entity *objects, int object
         else if (attack) {
             attack = false;
             animTime += deltaTime;
-            std::cout << animTime << "\n";
 
             if (animTime >= 0.08f) {
                 animTime = 0.0f;
@@ -216,11 +229,6 @@ void Entity::Update(float deltaTime, Entity *player, Entity *objects, int object
         else {
             animIndex = 0;
         }
-    }
-    
-    if (jump) {
-        jump = false;
-        velocity.y = jumpPower;
     }
     
     velocity.x =  movement.x * speed;
@@ -252,13 +260,12 @@ void Entity::DrawSpriteFromTextureAtlas(ShaderProgram *program, GLuint textureID
     float u = (float)(index % animCols) / (float)animCols;
     float v = (float)(index / animCols) / (float)animRows;
     
-    float width = 1.0f / (float)animCols;
+    float width = 1.0f / (float)animCols - 0.014f;
     float height = 1.0f / (float)animRows;
     
-    float texCoords[] = { u, v + height, u + width, v + height, u + width, v,
-        u, v + height, u + width, v, u, v};
-    
+    float texCoords[] = { u, v + height, u + width, v + height, u + width, v, u, v + height, u + width, v, u, v};
     float vertices[]  = {-0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5};
+    
     if (entityType == ENEMY) {
        vertices[1] = -0.5;
        vertices[3] = -0.5;

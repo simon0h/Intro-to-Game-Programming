@@ -13,7 +13,7 @@
 #include "ShaderProgram.h"
 #include "Map.h"
 
-enum EntityType {PLAYER, ENEMY};
+enum EntityType {PLAYER, ENEMY, WEAPON};
 
 enum AIType {WALKER, WAIT};
 enum AIState {IDLE, WALKING, ATTACKING};
@@ -65,7 +65,7 @@ public:
     bool lookingUp = false;
     
     bool attack = false;
-    bool holdingWeapon = true;
+    bool holdingWeapon = false;
     
     int lives = 0;
     bool isActive = true;
