@@ -22,6 +22,7 @@
 		F47E6D8A24CEC1C6008E3BFD /* Level1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F47E6D8824CEC1C6008E3BFD /* Level1.cpp */; };
 		F47E6D9024CEC8CB008E3BFD /* Level2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F47E6D8E24CEC8CB008E3BFD /* Level2.cpp */; };
 		F47E6D9324D10D32008E3BFD /* Level3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F47E6D9124D10D32008E3BFD /* Level3.cpp */; };
+		F481A97C24E7ED31009AE995 /* attack.wav in CopyFiles */ = {isa = PBXBuildFile; fileRef = F481A97B24E7ED21009AE995 /* attack.wav */; };
 		F48B0B0624DF9A2500C29BA5 /* tiles.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = F48B0B0524DF9A1500C29BA5 /* tiles.png */; };
 		F4949AAF24CD5CF400594252 /* Map.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4949AAE24CD5CF400594252 /* Map.cpp */; };
 		F4949AB224CE869000594252 /* Util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4949AB024CE869000594252 /* Util.cpp */; };
@@ -41,6 +42,7 @@
 				F471C28D24D63B7E00888205 /* link.png in CopyFiles */,
 				F477060324E234E400C3D003 /* sword.png in CopyFiles */,
 				F48B0B0624DF9A2500C29BA5 /* tiles.png in CopyFiles */,
+				F481A97C24E7ED31009AE995 /* attack.wav in CopyFiles */,
 				F471C29124D695AE00888205 /* theme.mp3 in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -70,6 +72,7 @@
 		F47E6D8F24CEC8CB008E3BFD /* Level2.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Level2.h; sourceTree = "<group>"; };
 		F47E6D9124D10D32008E3BFD /* Level3.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Level3.cpp; sourceTree = "<group>"; };
 		F47E6D9224D10D32008E3BFD /* Level3.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Level3.h; sourceTree = "<group>"; };
+		F481A97B24E7ED21009AE995 /* attack.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = attack.wav; sourceTree = "<group>"; };
 		F48B0B0524DF9A1500C29BA5 /* tiles.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tiles.png; sourceTree = "<group>"; };
 		F4949AAD24CD5CF400594252 /* Map.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Map.h; sourceTree = "<group>"; };
 		F4949AAE24CD5CF400594252 /* Map.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Map.cpp; sourceTree = "<group>"; };
@@ -141,6 +144,7 @@
 				F471C28C24D63B6A00888205 /* link.png */,
 				F477060224E234DB00C3D003 /* sword.png */,
 				F48B0B0524DF9A1500C29BA5 /* tiles.png */,
+				F481A97B24E7ED21009AE995 /* attack.wav */,
 				F471C29024D6958700888205 /* theme.mp3 */,
 			);
 			path = SDLProject;

@@ -30,6 +30,8 @@ unsigned int level1_data[] = {
 
 void Level1::Initialize() {
     
+    glClearColor(1.0f, 0.7529f, 0.4784f, 1.0f);
+    
     state.nextScene = -1;
     
     GLuint mapTextureID = Util::LoadTexture("tiles.png");
@@ -101,10 +103,11 @@ void Level1::Update(float deltaTime) {
     state.weapon->Update(deltaTime, state.weapon, state.player, 1, state.map);
     state.enemies[0].Update(deltaTime, state.enemies, state.player, 1, state.map);
     
-    if (state.player->position.x > 27 and state.player->position.x < 27.375 and state.player->position.y == -2.75) {
+    if (state.player->position.x >= 26.7 and state.player->position.x <= 27.3 and state.player->position.y == -2.75) {
         state.nextScene = 1;
     }
 }
+
 void Level1::Render(ShaderProgram *program) {
     if (not state.player->startGame) {
         GLuint fontID = Util::LoadTexture("font.png");

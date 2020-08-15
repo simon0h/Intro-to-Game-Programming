@@ -31,12 +31,13 @@ ShaderProgram program;
 glm::mat4 viewMatrix, modelMatrix, projectionMatrix;
 
 Mix_Music *music;
-Mix_Chunk *jump;
+Mix_Chunk *attack;
 
 Scene *currentScene;
 Scene *sceneList[3];
 
 int lives = 3;
+bool holdingWeapon = false;
 
 void SwitchToScene(Scene *scene) {
     currentScene = scene;
@@ -66,7 +67,7 @@ void Initialize() {
     
     glUseProgram(program.programID);
     
-    glClearColor(1.0f, 0.7529f, 0.4784f, 1.0f);
+    //glClearColor(1.0f, 0.7529f, 0.4784f, 1.0f);
     glEnable(GL_BLEND);
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -78,6 +79,7 @@ void Initialize() {
     
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
     music = Mix_LoadMUS("theme.mp3");
+    attack = Mix_LoadWAV("attack.wav");
     Mix_PlayMusic(music, -1);
 }
 
@@ -100,7 +102,7 @@ void ProcessInput() {
                         break;
                     case SDLK_SPACE:
                         if (currentScene->state.player->holdingWeapon) {
-                            //Mix_PlayChannel(-1, jump, 0);
+                            Mix_PlayChannel(-1, attack, 0);
                             currentScene->state.player->attack = true;
                             if (currentScene->state.player->lookingLeft) {
                                 currentScene->state.player->animIndices = currentScene->state.player->animLeftAttack;
@@ -181,6 +183,12 @@ void Update() {
     viewMatrix = glm::mat4(1.0f);
     lives += currentScene->state.player->lives;
     currentScene->state.player->lives = 0;
+    if (currentScene->state.player->holdingWeapon) {
+        holdingWeapon = true;
+    }
+    if (holdingWeapon) {
+        currentScene->state.player->holdingWeapon = true;
+    }
     if (lives == 0) {
         currentScene->state.player->isActive = false;
         currentScene->state.player->gameOver = true;

@@ -21,6 +21,7 @@ struct GameState {
     Entity *weapon;
     int nextScene;
 };
+
 class Scene {
 public:
     GameState state;
