@@ -74,7 +74,7 @@ void Initialize() {
     sceneList[0] = new Level1();
     sceneList[1] = new Level2();
     sceneList[2] = new Level3();
-    SwitchToScene(sceneList[1]);
+    SwitchToScene(sceneList[0]);
     
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
     music = Mix_LoadMUS("theme.mp3");
@@ -101,7 +101,7 @@ void ProcessInput() {
                         break;
                     case SDLK_SPACE:
                         if (currentScene->state.player->holdingWeapon) {
-                            Mix_PlayChannel(-1, attack, 0);
+                            Mix_PlayChannel(-1, attack, 0); //Atatck sound only plays when the player picked up a weapon
                             currentScene->state.player->attack = true;
                             if (currentScene->state.player->lookingLeft) {
                                 currentScene->state.player->animIndices = currentScene->state.player->animLeftAttack;
