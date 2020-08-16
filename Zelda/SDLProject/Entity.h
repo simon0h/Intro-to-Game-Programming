@@ -26,6 +26,7 @@ public:
     
     bool startGame = false;
     
+    glm::vec3 spawnPosition;
     glm::vec3 position;
     glm::vec3 movement;
     glm::vec3 velocity;

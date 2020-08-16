@@ -3,7 +3,7 @@
 #define LEVEL1_WIDTH 30
 #define LEVEL1_HEIGHT 20
 
-#define LEVEL_1_ENEMY_COUNT 1
+#define LEVEL_1_ENEMY_COUNT 4
 
 unsigned int level1_data[] = {
     91, 55, 55, 55, 55, 55, 55, 55, 55, 91, 91, 91, 91, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 91, 91, 55, 55, 55, 55, 55,
@@ -40,6 +40,7 @@ void Level1::Initialize() {
     // Initialize Player
     state.player = new Entity();
     state.player->entityType = PLAYER;
+    state.player->spawnPosition = glm::vec3(4, -4, 0);
     state.player->position = glm::vec3(4, -4, 0);
     state.player->movement = glm::vec3(0);
     state.player->speed = 2.5f;
@@ -61,8 +62,8 @@ void Level1::Initialize() {
     state.player->animTime = 0;
     state.player->animCols = 15;
     state.player->animRows = 11;
-    state.player->height = 0.5f;
-    state.player->width = 0.5f;
+    state.player->height = 0.85f;
+    state.player->width = 0.85f;
     
     // Initialize weapon
     state.weapon = new Entity();
@@ -74,36 +75,46 @@ void Level1::Initialize() {
     
     // Initialize Enemies
     state.enemies = new Entity[LEVEL_1_ENEMY_COUNT];
-    GLuint enemyTextureID = Util::LoadTexture("font.png");
+    GLuint enemyTextureID = Util::LoadTexture("enemies.png");
+    for (int i = 0; i < LEVEL_1_ENEMY_COUNT; i++) {
+        state.enemies[i].entityType = ENEMY;
+        state.enemies[i].textureID = enemyTextureID;
+        state.enemies[i].speed = 0.8f;
+        state.enemies[i].aiType = WALKER;
+        state.enemies[i].aiState = WALKING;
 
-//    state.enemies[0].entityType = ENEMY;
-//    state.enemies[0].textureID = enemyTextureID;
-//    state.enemies[0].position = glm::vec3(11, 3, 0);
-//    state.enemies[0].movement = glm::vec3(1, 0, 0);
-//    state.enemies[0].speed = 0.7;
-//    state.enemies[0].aiType = WALKER;
-//    state.enemies[0].aiState = WALKING;
-//    state.enemies[0].acceleration = glm::vec3(0, -9.81f, 0);
-//
-//    state.enemies[0].animRight = new int[2] {0, 1};
-//    state.enemies[0].animLeft = new int[2] {0, 1};
-//
-//    state.enemies[0].animIndices = state.enemies[0].animRight;
-//    state.enemies[0].animFrames = 2;
-//    state.enemies[0].animIndex = 0;
-//    state.enemies[0].animTime = 0;
-//    state.enemies[0].animCols = 2;
-//    state.enemies[0].animRows = 1;
-//    state.enemies[0].height = 1;
-//    state.enemies[0].width = 1;
+        state.enemies[i].animRight = new int[2] {3, 18};
+        state.enemies[i].animLeft = new int[2] {1, 16};
+        state.enemies[i].animUp = new int[2] {2, 17};
+        state.enemies[i].animDown = new int[2] {0, 15};
+
+        state.enemies[i].animIndices = state.enemies[0].animRight;
+        state.enemies[i].animFrames = 2;
+        state.enemies[i].animIndex = 0;
+        state.enemies[i].animTime = 0;
+        state.enemies[i].animCols = 15;
+        state.enemies[i].animRows = 11;
+        state.enemies[i].height = 1;
+        state.enemies[i].width = 1.1f;
+    }
+    state.enemies[0].position = glm::vec3(3.75f, -12, 0);
+    state.enemies[0].movement = glm::vec3(1.5f, 0, 0);
+    state.enemies[1].position = glm::vec3(16, -1, 0);
+    state.enemies[1].movement = glm::vec3(0, 1.5f, 0);
+    state.enemies[2].position = glm::vec3(17, -7, 0);
+    state.enemies[2].movement = glm::vec3(1.5f, 0, 0);
+    state.enemies[3].position = glm::vec3(27, -10, 0);
+    state.enemies[3].movement = glm::vec3(0, 1.5f, 0);
 }
+
 void Level1::Update(float deltaTime) {
     state.player->Update(deltaTime, state.player, state.enemies, LEVEL_1_ENEMY_COUNT, state.map);
     state.player->Update(deltaTime, state.player, state.weapon, 1, state.map);
     state.weapon->Update(deltaTime, state.weapon, state.player, 1, state.map);
-    state.enemies[0].Update(deltaTime, state.enemies, state.player, 1, state.map);
-    
-    if (state.player->position.x >= 26.7 and state.player->position.x <= 27.3 and state.player->position.y == -2.75) {
+    for (int i = 0; i < LEVEL_1_ENEMY_COUNT; i++) {
+        state.enemies[i].Update(deltaTime, state.enemies, state.player, 1, state.map);
+    }
+    if (state.player->position.x >= 26.7 and state.player->position.x <= 27.3 and state.player->position.y >= -2.926) {
         state.nextScene = 1;
     }
 }
@@ -117,15 +128,14 @@ void Level1::Render(ShaderProgram *program) {
     }
     else if (state.player->gameOver) {
         GLuint fontID = Util::LoadTexture("font.png");
-        Util::DrawText(program, fontID, "Game Over", 1, 0, glm::vec3(state.player->position.x - 3.25f, -3, 0));
-        state.map->Render(program);
-        state.player->Render(program);
-        state.enemies[0].Render(program);
+        Util::DrawText(program, fontID, "game over", 1, 0, glm::vec3(state.player->position.x - 3.25f, state.player->position.y, 0));
     }
     else {
         state.map->Render(program);
         state.player->Render(program);
         state.weapon->Render(program);
-        state.enemies[0].Render(program);
+        for (int i = 0; i < LEVEL_1_ENEMY_COUNT; i++) {
+            state.enemies[i].Render(program);
+        }
     }
 }

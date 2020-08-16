@@ -34,11 +34,14 @@ void Entity::CheckCollisionsX(Entity *objects, int objectCount) {
                 position.x -= penetrationX;
                 velocity.x = 0;
                 collidedRight = true;
-                if (object->entityType == PLAYER) {
+                if (entityType == ENEMY and object->attack == false) {
                     object->lives = -1;
-                    object->position.y = 4;
+                    object->position = object->spawnPosition;
                     modelMatrix = glm::mat4(1.0f);
                     modelMatrix = glm::translate(modelMatrix, position);
+                }
+                else if (entityType == ENEMY and object->attack) {
+                    isActive = false;
                 }
                 if (objects->entityType == WEAPON) {
                     object->isActive = false;
@@ -49,11 +52,14 @@ void Entity::CheckCollisionsX(Entity *objects, int objectCount) {
                 position.x += penetrationX;
                 velocity.x = 0;
                 collidedLeft = true;
-                if (object->entityType == PLAYER) {
+                if (entityType == ENEMY and object->attack == false) {
                     object->lives = -1;
-                    object->position.y = 4;
+                    object->position = object->spawnPosition;
                     modelMatrix = glm::mat4(1.0f);
                     modelMatrix = glm::translate(modelMatrix, position);
+                }
+                else if (entityType == ENEMY and object->attack) {
+                    isActive = false;
                 }
                 if (objects->entityType == WEAPON) {
                     object->isActive = false;
@@ -79,6 +85,16 @@ void Entity::CheckCollisionsX(Map *map) {
         velocity.x = 0;
         collidedRight = true;
     }
+    if (entityType == ENEMY) {
+       if (collidedLeft) {
+           movement = glm::vec3(1.5f, 0, 0);
+           animIndices = animRight;
+       }
+       if (collidedRight) {
+           movement = glm::vec3(-1.5f, 0, 0);
+           animIndices = animLeft;
+       }
+   }
 }
 
 void Entity::CheckCollisionsY(Entity *objects, int objectCount) {
@@ -91,6 +107,15 @@ void Entity::CheckCollisionsY(Entity *objects, int objectCount) {
                 position.y -= penetrationY;
                 velocity.y = 0;
                 collidedTop = true;
+                if (entityType == ENEMY and object->attack == false) {
+                    object->lives = -1;
+                    object->position = object->spawnPosition;
+                    modelMatrix = glm::mat4(1.0f);
+                    modelMatrix = glm::translate(modelMatrix, position);
+                }
+                else if (entityType == ENEMY and object->attack) {
+                    isActive = false;
+                }
                 if (objects->entityType == WEAPON) {
                     object->isActive = false;
                     holdingWeapon = true;
@@ -100,8 +125,14 @@ void Entity::CheckCollisionsY(Entity *objects, int objectCount) {
                 position.y += penetrationY;
                 velocity.y = 0;
                 collidedBottom = true;
-                if (object->entityType == ENEMY) {
-                    object->isActive = false;
+                if (entityType == ENEMY and object->attack == false) {
+                    object->lives = -1;
+                    object->position = object->spawnPosition;
+                    modelMatrix = glm::mat4(1.0f);
+                    modelMatrix = glm::translate(modelMatrix, position);
+                }
+                else if (entityType == ENEMY and object->attack) {
+                    isActive = false;
                 }
                 if (objects->entityType == WEAPON) {
                     object->isActive = false;
@@ -153,6 +184,16 @@ void Entity::CheckCollisionsY(Map *map) {
         position.y += penetration_y;
         velocity.y = 0;
         collidedBottom = true;
+    }
+    if (entityType == ENEMY) {
+        if (collidedTop) {
+            movement = glm::vec3(0, -1.5f, 0);
+            animIndices = animDown;
+        }
+        else if (collidedBottom) {
+            movement = glm::vec3(0, 1.5f, 0);
+            animIndices = animUp;
+        }
     }
 }
 
@@ -214,18 +255,6 @@ void Entity::Update(float deltaTime, Entity *player, Entity *objects, int object
                 }
             }
         }
-        else if (attack) {
-            attack = false;
-            animTime += deltaTime;
-
-            if (animTime >= 0.08f) {
-                animTime = 0.0f;
-                animIndex++;
-                if (animIndex >= animFrames) {
-                    animIndex = 0;
-                }
-            }
-        }
         else {
             animIndex = 0;
         }
@@ -235,23 +264,18 @@ void Entity::Update(float deltaTime, Entity *player, Entity *objects, int object
     velocity.y = movement.y * speed;
     velocity += acceleration * deltaTime;
     
+    position.x += velocity.x * deltaTime;
+    CheckCollisionsX(map);
+    CheckCollisionsX(objects, objectCount);
+    
     position.y += velocity.y * deltaTime;
     CheckCollisionsY(map);
     CheckCollisionsY(objects, objectCount);
     
-    position.x += velocity.x * deltaTime;
-    CheckCollisionsX(map);
-    if (entityType == ENEMY) {
-        if (collidedLeft) {
-            movement = glm::vec3(1, 0, 0);
-        }
-        if (collidedRight) {
-            movement = glm::vec3(-1, 0, 0);
-        }
+    if (entityType == PLAYER) {
+        std::cout << "Position: " << position.x << ", " << position.y << "\n";
+        //std::cout << lives << "\n";
     }
-    CheckCollisionsX(objects, objectCount);
-    
-    // std::cout << "Position: " << position.x << ", " << position.y << "\n";
     
     modelMatrix = glm::mat4(1.0f);
     modelMatrix = glm::translate(modelMatrix, position);
@@ -265,16 +289,20 @@ void Entity::DrawSpriteFromTextureAtlas(ShaderProgram *program, GLuint textureID
     float width = 1.0f / (float)animCols - 0.014f;
     float height = 1.0f / (float)animRows;
     
+    if (entityType == ENEMY) {
+        height -= 0.01f;
+    }
+    
     float texCoords[] = { u, v + height, u + width, v + height, u + width, v, u, v + height, u + width, v, u, v};
     float vertices[]  = {-0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5};
     
     if (entityType == ENEMY) {
-       vertices[1] = -0.5;
-       vertices[3] = -0.5;
-       vertices[5] = 0.5;
-       vertices[7] = -0.5;
-       vertices[9] = 0.5;
-       vertices[11] = 0.5;
+       vertices[1] = -0.6;
+       vertices[3] = -0.6;
+       vertices[5] = 0.6;
+       vertices[7] = -0.6;
+       vertices[9] = 0.6;
+       vertices[11] = 0.6;
     }
     
     glBindTexture(GL_TEXTURE_2D, textureID);

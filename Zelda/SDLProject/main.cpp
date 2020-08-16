@@ -67,7 +67,6 @@ void Initialize() {
     
     glUseProgram(program.programID);
     
-    //glClearColor(1.0f, 0.7529f, 0.4784f, 1.0f);
     glEnable(GL_BLEND);
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -75,7 +74,7 @@ void Initialize() {
     sceneList[0] = new Level1();
     sceneList[1] = new Level2();
     sceneList[2] = new Level3();
-    SwitchToScene(sceneList[0]);
+    SwitchToScene(sceneList[1]);
     
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
     music = Mix_LoadMUS("theme.mp3");
@@ -128,6 +127,7 @@ void ProcessInput() {
     const Uint8 *keys = SDL_GetKeyboardState(NULL);
 
     if (keys[SDL_SCANCODE_LEFT]) {
+        currentScene->state.player->attack = false;
         currentScene->state.player->lookingLeft = true;
         currentScene->state.player->lookingRight = false;
         currentScene->state.player->lookingUp = false;
@@ -136,6 +136,7 @@ void ProcessInput() {
         currentScene->state.player->animIndices = currentScene->state.player->animLeft;
     }
     else if (keys[SDL_SCANCODE_RIGHT]) {
+        currentScene->state.player->attack = false;
         currentScene->state.player->lookingLeft = false;
         currentScene->state.player->lookingRight = true;
         currentScene->state.player->lookingUp = false;
@@ -144,6 +145,7 @@ void ProcessInput() {
         currentScene->state.player->animIndices = currentScene->state.player->animRight;
     }
     else if (keys[SDL_SCANCODE_UP]) {
+        currentScene->state.player->attack = false;
         currentScene->state.player->lookingLeft = false;
         currentScene->state.player->lookingRight = false;
         currentScene->state.player->lookingUp = true;
@@ -152,6 +154,7 @@ void ProcessInput() {
         currentScene->state.player->animIndices = currentScene->state.player->animUp;
     }
     else if (keys[SDL_SCANCODE_DOWN]) {
+        currentScene->state.player->attack = false;
         currentScene->state.player->lookingLeft = false;
         currentScene->state.player->lookingRight = false;
         currentScene->state.player->lookingUp = false;
@@ -193,7 +196,7 @@ void Update() {
         currentScene->state.player->isActive = false;
         currentScene->state.player->gameOver = true;
     }
-   if (currentScene->state.player->position.x >= 5 and currentScene->state.player->position.x < currentScene->state.map->getMapLength() - 6) {
+    if (currentScene->state.player->position.x >= 5 and currentScene->state.player->position.x < currentScene->state.map->getMapLength() - 6) {
         viewMatrix = glm::translate(viewMatrix, glm::vec3(-currentScene->state.player->position.x, 0, 0));
     }
     else {

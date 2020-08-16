@@ -23,6 +23,7 @@
 		F47E6D9024CEC8CB008E3BFD /* Level2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F47E6D8E24CEC8CB008E3BFD /* Level2.cpp */; };
 		F47E6D9324D10D32008E3BFD /* Level3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F47E6D9124D10D32008E3BFD /* Level3.cpp */; };
 		F481A97C24E7ED31009AE995 /* attack.wav in CopyFiles */ = {isa = PBXBuildFile; fileRef = F481A97B24E7ED21009AE995 /* attack.wav */; };
+		F481A97E24E8C5E9009AE995 /* enemies.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = F481A97D24E8C5E2009AE995 /* enemies.png */; };
 		F48B0B0624DF9A2500C29BA5 /* tiles.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = F48B0B0524DF9A1500C29BA5 /* tiles.png */; };
 		F4949AAF24CD5CF400594252 /* Map.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4949AAE24CD5CF400594252 /* Map.cpp */; };
 		F4949AB224CE869000594252 /* Util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4949AB024CE869000594252 /* Util.cpp */; };
@@ -38,6 +39,7 @@
 			dstSubfolderSpec = 6;
 			files = (
 				DBDF1B612323DE9E007CECB1 /* shaders in CopyFiles */,
+				F481A97E24E8C5E9009AE995 /* enemies.png in CopyFiles */,
 				F471C29524D69B4300888205 /* font.png in CopyFiles */,
 				F471C28D24D63B7E00888205 /* link.png in CopyFiles */,
 				F477060324E234E400C3D003 /* sword.png in CopyFiles */,
@@ -73,6 +75,7 @@
 		F47E6D9124D10D32008E3BFD /* Level3.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Level3.cpp; sourceTree = "<group>"; };
 		F47E6D9224D10D32008E3BFD /* Level3.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Level3.h; sourceTree = "<group>"; };
 		F481A97B24E7ED21009AE995 /* attack.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = attack.wav; sourceTree = "<group>"; };
+		F481A97D24E8C5E2009AE995 /* enemies.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = enemies.png; sourceTree = "<group>"; };
 		F48B0B0524DF9A1500C29BA5 /* tiles.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tiles.png; sourceTree = "<group>"; };
 		F4949AAD24CD5CF400594252 /* Map.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Map.h; sourceTree = "<group>"; };
 		F4949AAE24CD5CF400594252 /* Map.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Map.cpp; sourceTree = "<group>"; };
@@ -141,6 +144,7 @@
 				DBDF1B592323DE8D007CECB1 /* ShaderProgram.h */,
 				DBDF1B5A2323DE8D007CECB1 /* stb_image.h */,
 				F471C29424D69B3700888205 /* font.png */,
+				F481A97D24E8C5E2009AE995 /* enemies.png */,
 				F471C28C24D63B6A00888205 /* link.png */,
 				F477060224E234DB00C3D003 /* sword.png */,
 				F48B0B0524DF9A1500C29BA5 /* tiles.png */,
