@@ -272,11 +272,6 @@ void Entity::Update(float deltaTime, Entity *player, Entity *objects, int object
     CheckCollisionsY(map);
     CheckCollisionsY(objects, objectCount);
     
-    if (entityType == PLAYER) {
-        std::cout << "Position: " << position.x << ", " << position.y << "\n";
-        //std::cout << lives << "\n";
-    }
-    
     modelMatrix = glm::mat4(1.0f);
     modelMatrix = glm::translate(modelMatrix, position);
 }
